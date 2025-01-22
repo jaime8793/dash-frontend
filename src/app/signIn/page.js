@@ -1,5 +1,68 @@
+"use client";
+
+import React, { useState } from "react";
+import { Eye, EyeOff, User, Lock } from "lucide-react";
+
 const SignIn = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    rememberMe: false,
+  });
+
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [touched, setTouched] = useState({});
+
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "username":
+        if (!value) error = "Username is required";
+        break;
+      case "password":
+        if (!value) error = "Password is required";
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const fieldValue = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: fieldValue }));
+    if (touched[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: validateField(name, fieldValue),
+      }));
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (key !== "rememberMe") {
+        const error = validateField(key, formData[key]);
+        if (error) newErrors[key] = error;
+      }
+    });
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      console.log("Form submitted:", formData);
+      // Handle form submission
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -111,4 +174,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn
+export default SignIn;

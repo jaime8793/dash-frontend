@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, User, Phone, Mail, Lock } from "lucide-react";
 
