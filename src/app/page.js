@@ -32,7 +32,7 @@ const DashLandingPage = () => {
           </p>
           <div className="flex space-x-4">
             <button className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700">
-              Download App
+              Order Now
             </button>
             <button className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700">
               Learn More
@@ -41,7 +41,8 @@ const DashLandingPage = () => {
         </div>
         <div className="flex justify-center">
           <Image
-            src=""
+            // will change baadaye after getting proper images
+            src= {null}
             alt="Dash App"
             className="max-w-full rounded-lg shadow-xl"
           />
