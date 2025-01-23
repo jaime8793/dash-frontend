@@ -161,9 +161,9 @@ const SignIn = () => {
         </form>
 
         <p className="text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Dont have an account?{" "}
           <a
-            href="/signup"
+            href="/signUp"
             className="font-medium text-blue-600 hover:text-blue-500"
           >
             Sign up
