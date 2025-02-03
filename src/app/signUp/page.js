@@ -121,19 +121,21 @@ const SignUp = () => {
       setIsSubmitting(true);
       setApiError("");
       try {
-        const response = await fetch("http://localhost:5002/buyerSignUp", {
-          // Update endpoint if needed
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: formData.username,
-            email: formData.email,
-            phone: formData.phone,
-            password: formData.password,
-          }),
-        });
+        const response = await fetch(
+          "http://localhost:5000/api/auth/buyerSignUp",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: formData.username,
+              email: formData.email,
+              phone: formData.phone,
+              password: formData.password,
+            }),
+          }
+        );
 
         const data = await response.json();
         if (!response.ok) {
