@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, User, Phone, Mail, Lock } from "lucide-react";
+//import { redirect } from "next/navigation";
 
 const PasswordStrengthIndicator = ({ password }) => {
   const getStrength = (password) => {
@@ -45,6 +46,7 @@ const PasswordStrengthIndicator = ({ password }) => {
 };
 
 const SignUp = () => {
+  console.log("Sign up page");
   const [formData, setFormData] = useState({
     username: "",
     phone: "",
@@ -139,17 +141,16 @@ const SignUp = () => {
 
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.message || "Sign up failed");
+          throw new Error("Sign up failed");
+        } else {
+          console.log("Sign up successful:", data);
         }
-
-        // Handle successful sign-up
-        console.log("Sign up successful:", data);
-        // Redirect or show success message
-        // Example: router.push('/signIn') if using Next.js
+        //redirect(`http://localhost:3000/signIn`);
       } catch (error) {
-        setApiError(error.message);
+        setApiError(`this is an error in the post request ${error.message}`);
       } finally {
         setIsSubmitting(false);
+        console.log(`Post request done`);
       }
     }
   };
@@ -191,6 +192,9 @@ const SignUp = () => {
                   placeholder="johndoe"
                 />
               </div>
+              {errors.username && touched.username && (
+                <p className="mt-1 text-sm text-red-500">{errors.username}</p>
+              )}
               {errors.username && touched.username && (
                 <p className="mt-1 text-sm text-red-500">{errors.username}</p>
               )}

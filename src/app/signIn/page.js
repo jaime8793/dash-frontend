@@ -61,6 +61,8 @@ const SignIn = () => {
     if (Object.keys(newErrors).length === 0) {
       console.log("Form submitted:", formData);
       // Handle form submission
+    } else {
+      console.log("Form has errors:", newErrors);
     }
   };
 
