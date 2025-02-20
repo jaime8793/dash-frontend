@@ -1,16 +1,22 @@
+"use client";
+
 import React from "react";
 import { Phone, ShoppingCart, Clock } from "lucide-react";
 import Image from "next/image";
+import { useContext } from "react";
+import { AppContext } from "@/context/AppContext";
 
 const DashLandingPage = () => {
+  const { userData } = useContext(AppContext);
   const landingPageButtons = [
     { text: "Home", link: "#" },
     { text: "Services", link: "#" },
     { text: "Download", link: "#" },
     { text: "Order Now", link: "#" },
     { text: "Learn More", link: "#" },
-    {text : "Sign Up", link: "http://localhost:3000/signUp"}
+    { text: "Sign Up", link: "http://localhost:3000/signUp" },
   ];
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -18,26 +24,32 @@ const DashLandingPage = () => {
         <div className="text-2xl font-bold">Dash</div>
         <div className="space-x-4">
           {landingPageButtons.map((button) => (
-            <a key={button.text} href
-            ={button.link} className="hover:text-purple-200">
+            <a
+              key={button.text}
+              href={button.link}
+              className="hover:text-purple-200"
+            >
               {button.text}
             </a>
           ))}
         </div>
-          
       </nav>
 
       {/* Hero Section */}
       <header className="grid md:grid-cols-2 gap-8 p-12 items-center">
         <div>
           <h1 className="text-5xl font-bold text-red-600 mb-4">
-            Get Anything, Anytime
+            {userData !== undefined
+              ? `Hey ${userData.user.username} Get Anything, Anytime`
+              : " Get Anything, Anytime"}
           </h1>
           <p className="text-xl text-gray-700 mb-6">
             From food to groceries, Dash delivers what you need in minutes.
           </p>
           <div className="flex space-x-4">
-            <button className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700">
+            <button className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700"
+              href="http://localhost:3000/orderNowPage"
+            >
               Order Now
             </button>
             <button className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700">
@@ -48,7 +60,7 @@ const DashLandingPage = () => {
         <div className="flex justify-center">
           <Image
             // will change baadaye after getting proper images
-            src= {null}
+            src={null}
             alt="Dash App"
             className="max-w-full rounded-lg shadow-xl"
           />

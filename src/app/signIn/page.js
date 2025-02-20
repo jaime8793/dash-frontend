@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, createContext, useContext } from "react";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { AppContext } from "@/context/AppContext";
+//user context creation
 
 const SignIn = () => {
   const router = useRouter();
@@ -18,6 +20,7 @@ const SignIn = () => {
   const [touched, setTouched] = useState({});
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { userData, setUserData } = useContext(AppContext);
 
   const validateField = (name, value) => {
     let error = "";
@@ -67,7 +70,7 @@ const SignIn = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              username: formData.username, // Ensure you're sending phone, not username
+              username: formData.username,
               password: formData.password,
             }),
           }
@@ -79,7 +82,13 @@ const SignIn = () => {
           throw new Error(data.message || "Login failed");
         }
 
-        console.log("Login successful:", data);
+        console.log("Login successful frontend:", data);
+        console.log(`this is the user data before state update`, userData);
+
+        // ✅ Properly update the state
+        setUserData(data);
+
+        console.log(`this is the user data after state update`, userData);
         router.push("/"); // Redirect user after successful login
       } catch (error) {
         setApiError(error.message);
