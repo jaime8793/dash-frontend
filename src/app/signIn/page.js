@@ -2,10 +2,13 @@
 
 import React, { useState } from "react";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
-    username: "",
+    username: "", // Backend expects username
     password: "",
     rememberMe: false,
   });
@@ -13,31 +16,24 @@ const SignIn = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateField = (name, value) => {
     let error = "";
-    switch (name) {
-      case "username":
-        if (!value) error = "Username is required";
-        break;
-      case "password":
-        if (!value) error = "Password is required";
-        break;
-      default:
-        break;
-    }
+    if (!value) error = `${name} is required`;
     return error;
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const fieldValue = type === "checkbox" ? checked : value;
-    setFormData((prev) => ({ ...prev, [name]: fieldValue }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
     if (touched[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: validateField(name, fieldValue),
-      }));
+      setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
     }
   };
 
@@ -48,65 +44,54 @@ const SignIn = () => {
   };
 
   const handleSubmit = async (e) => {
-    const [apiError, setApiError] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
     e.preventDefault();
     const newErrors = {};
+
     Object.keys(formData).forEach((key) => {
       if (key !== "rememberMe") {
         const error = validateField(key, formData[key]);
         if (error) newErrors[key] = error;
       }
     });
+
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log("Form submitted:", formData);
-      // Handle form submission
-      if (Object.keys(newErrors).length === 0) {
       setIsSubmitting(true);
       setApiError("");
+
       try {
         const response = await fetch(
           "http://localhost:5000/api/auth/buyerLogIn",
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              username: formData.username,
-              email: formData.email,
-              phone: formData.phone,
+              username: formData.username, // Ensure you're sending phone, not username
               password: formData.password,
             }),
           }
         );
 
         const data = await response.json();
-        if (!response.ok) {
-          throw new Error("Sign up failed");
-        } else {
-          console.log("Sign up successful:", data);
+
+        if (!data.success) {
+          throw new Error(data.message || "Login failed");
         }
-        //redirect(`http://localhost:3000/signIn`);
+
+        console.log("Login successful:", data);
+        router.push("/"); // Redirect user after successful login
       } catch (error) {
-        setApiError(`this is an error in the post request ${error.message}`);
+        setApiError(error.message);
       } finally {
         setIsSubmitting(false);
-        console.log(`Post request done`);
       }
-    } else {
-      console.log("Form has errors:", newErrors);
     }
-    };
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8 bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-        {/* Logo Placeholder */}
         <div className="flex justify-center">
           <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
             <span className="text-gray-500 text-xl font-bold">LOGO</span>
@@ -117,9 +102,9 @@ const SignIn = () => {
           Sign in to your account
         </h2>
 
-        <form className="mt-8 space-y-6">
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            {/* Username */}
+            {/* Username Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Username
@@ -130,13 +115,20 @@ const SignIn = () => {
                 </div>
                 <input
                   type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="johndoe"
+                  placeholder="John Doe"
                 />
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+                )}
               </div>
             </div>
 
-            {/* Password */}
+            {/* Password Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Password
@@ -147,6 +139,10 @@ const SignIn = () => {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   placeholder="••••••••"
                 />
@@ -161,50 +157,49 @@ const SignIn = () => {
                     <Eye className="h-5 w-5 text-gray-400" />
                   )}
                 </button>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
             </div>
           </div>
 
+          {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
-                id="remember-me"
-                name="remember-me"
+                name="rememberMe"
                 type="checkbox"
+                checked={formData.rememberMe}
+                onChange={handleChange}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
+              <label className="ml-2 block text-sm text-gray-900">
                 Remember me
               </label>
             </div>
 
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Forgot your password?
-              </a>
-            </div>
+            <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
+              Forgot your password?
+            </a>
           </div>
 
+          {/* API Error Message */}
+          {apiError && <p className="text-red-600 text-sm">{apiError}</p>}
+
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            disabled={isSubmitting}
+            className="w-full py-2 px-4 text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            Sign in
+            {isSubmitting ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-600">
-          Dont have an account?{" "}
-          <a
-            href="/signUp"
-            className="font-medium text-blue-600 hover:text-blue-500"
-          >
+          Don’t have an account?{" "}
+          <a href="/signUp" className="text-blue-600 hover:text-blue-500">
             Sign up
           </a>
         </p>
