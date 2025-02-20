@@ -47,7 +47,10 @@ const SignIn = () => {
     setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    const [apiError, setApiError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     e.preventDefault();
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -61,10 +64,44 @@ const SignIn = () => {
     if (Object.keys(newErrors).length === 0) {
       console.log("Form submitted:", formData);
       // Handle form submission
+      if (Object.keys(newErrors).length === 0) {
+      setIsSubmitting(true);
+      setApiError("");
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/auth/buyerLogIn",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: formData.username,
+              email: formData.email,
+              phone: formData.phone,
+              password: formData.password,
+            }),
+          }
+        );
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error("Sign up failed");
+        } else {
+          console.log("Sign up successful:", data);
+        }
+        //redirect(`http://localhost:3000/signIn`);
+      } catch (error) {
+        setApiError(`this is an error in the post request ${error.message}`);
+      } finally {
+        setIsSubmitting(false);
+        console.log(`Post request done`);
+      }
     } else {
       console.log("Form has errors:", newErrors);
     }
-  };
+    };
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">

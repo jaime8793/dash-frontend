@@ -3,22 +3,28 @@ import { Phone, ShoppingCart, Clock } from "lucide-react";
 import Image from "next/image";
 
 const DashLandingPage = () => {
+  const landingPageButtons = [
+    { text: "Home", link: "#" },
+    { text: "Services", link: "#" },
+    { text: "Download", link: "#" },
+    { text: "Order Now", link: "#" },
+    { text: "Learn More", link: "#" },
+    {text : "Sign Up", link: "http://localhost:3000/signUp"}
+  ];
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="flex justify-between items-center p-4 bg-red-600 text-white">
         <div className="text-2xl font-bold">Dash</div>
         <div className="space-x-4">
-          <a href="#" className="hover:text-purple-200">
-            Home
-          </a>
-          <a href="#" className="hover:text-purple-200">
-            Services
-          </a>
-          <a href="#" className="hover:text-purple-200">
-            Download
-          </a>
+          {landingPageButtons.map((button) => (
+            <a key={button.text} href
+            ={button.link} className="hover:text-purple-200">
+              {button.text}
+            </a>
+          ))}
         </div>
+          
       </nav>
 
       {/* Hero Section */}
