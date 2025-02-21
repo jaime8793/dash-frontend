@@ -12,7 +12,7 @@ const DashLandingPage = () => {
     { text: "Home", link: "#" },
     { text: "Services", link: "#" },
     { text: "Download", link: "#" },
-    { text: "Order Now", link: "#" },
+    { text: "Order Now", link: "http://localhost:3000/orderNowPage" },
     { text: "Learn More", link: "#" },
     { text: "Sign Up", link: "http://localhost:3000/signUp" },
   ];
