@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation"; // ✅ Correct import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,10 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AddProductPage() {
-    //check why this is not working
- // const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
+    productName: "",
     description: "",
     price: "",
     category: "",
@@ -44,7 +42,8 @@ export default function AddProductPage() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Product name is required";
+    if (!formData.productName.trim())
+      newErrors.productName = "Product name is required";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
     if (!formData.price || isNaN(formData.price))
@@ -59,13 +58,29 @@ export default function AddProductPage() {
     e.preventDefault();
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
-      // Here you would typically send the data to your API
-      console.log("Submitting:", formData);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Redirect to a success page or product list
-      router.push("/products");
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/product/upload",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || "Product upload failed");
+        }
+
+        console.log("Product post successful frontend:", data);
+      } catch (error) {
+        console.error("Error uploading product:", error);
+        setErrors({ submit: error.message }); // ✅ Fix error state update
+      }
     } else {
+      console.log("Validation failed:", newErrors);
       setErrors(newErrors);
     }
   };
@@ -79,16 +94,18 @@ export default function AddProductPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="name">Product Name</Label>
+              <Label htmlFor="productName">Product Name</Label>
               <Input
-                id="name"
-                name="name"
-                value={formData.name}
+                id="productName"
+                name="productName"
+                value={formData.productName}
                 onChange={handleChange}
-                className={errors.name ? "border-red-500" : ""}
+                className={errors.productName ? "border-red-500" : ""}
               />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              {errors.productName && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.productName}
+                </p>
               )}
             </div>
 
@@ -128,7 +145,7 @@ export default function AddProductPage() {
               <Label htmlFor="category">Category</Label>
               <Select
                 onValueChange={handleCategoryChange}
-                value={formData.category}
+                value={formData.category || ""} // ✅ Prevents empty state issue
               >
                 <SelectTrigger
                   className={errors.category ? "border-red-500" : ""}
@@ -162,6 +179,10 @@ export default function AddProductPage() {
                 <p className="text-red-500 text-sm mt-1">{errors.inventory}</p>
               )}
             </div>
+
+            {errors.submit && (
+              <p className="text-red-500 text-sm mt-1">{errors.submit}</p>
+            )}
 
             <Button type="submit" className="w-full">
               Add Product
