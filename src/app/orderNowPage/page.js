@@ -74,7 +74,7 @@ export default function AddProductPage() {
           throw new Error(data.message || "Product upload failed");
         }
 
-        console.log("Product post successful frontend:", data);
+        console.log("Product post successful frontend:", data.product);
       } catch (error) {
         console.error("Error uploading product:", error);
         setErrors({ submit: error.message }); // ✅ Fix error state update
@@ -86,8 +86,8 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Card className="w-full max-w-2xl mx-auto">
+    <div className="container mx-auto p-9 h-screen flex">
+      <Card className="w-full max-w-2xl m-auto ">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Add New Product</CardTitle>
         </CardHeader>
