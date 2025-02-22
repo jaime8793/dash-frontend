@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner"; //toaster element
 
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
@@ -69,12 +70,16 @@ export default function AddProductPage() {
         );
 
         const data = await response.json();
+        console.log(`this is the data we are testing`,data)
 
-        if (!data.success) {
+        if (!data) {
           throw new Error(data.message || "Product upload failed");
+        } else {
+          console.log("Product post successful frontend:", data.product);
+          toast("Product has been created successfully");
         }
 
-        console.log("Product post successful frontend:", data.product);
+        
       } catch (error) {
         console.error("Error uploading product:", error);
         setErrors({ submit: error.message }); // ✅ Fix error state update
