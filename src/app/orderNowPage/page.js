@@ -70,7 +70,7 @@ export default function AddProductPage() {
         );
 
         const data = await response.json();
-        console.log(`this is the data we are testing`,data)
+        console.log(`this is the data we are testing`, data);
 
         if (!data) {
           throw new Error(data.message || "Product upload failed");
@@ -78,8 +78,6 @@ export default function AddProductPage() {
           console.log("Product post successful frontend:", data.product);
           toast("Product has been created successfully");
         }
-
-        
       } catch (error) {
         console.error("Error uploading product:", error);
         setErrors({ submit: error.message }); // ✅ Fix error state update

@@ -8,6 +8,7 @@ export const AppContext = createContext();
 export function AppContextProvider({ children }) {
   const [state, setState] = useState("some value");
   const [userData, setUserData] = useState(undefined);
+  
 
   return (
     <AppContext.Provider
