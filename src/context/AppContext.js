@@ -8,7 +8,7 @@ export const AppContext = createContext();
 export function AppContextProvider({ children }) {
   const [state, setState] = useState("some value");
   const [userData, setUserData] = useState(undefined);
-  
+  const [allProducts, setAllProducts] = useState(undefined);
 
   return (
     <AppContext.Provider
@@ -17,6 +17,7 @@ export function AppContextProvider({ children }) {
         setState,
         userData,
         setUserData,
+        userData, setUserData
       }}
     >
       {children}
