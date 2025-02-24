@@ -7,7 +7,7 @@ export const AppContext = createContext();
 // Create the provider component
 export function AppContextProvider({ children }) {
   const [state, setState] = useState("some value");
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(undefined);
   const [allProducts, setAllProducts] = useState({});
 
   return (
@@ -17,8 +17,7 @@ export function AppContextProvider({ children }) {
         setState,
         userData,
         setUserData,
-        allProducts,
-        setAllProducts,
+        allProducts, setAllProducts
       }}
     >
       {children}

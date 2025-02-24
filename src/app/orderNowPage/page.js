@@ -55,6 +55,8 @@ export default function AddProductPage() {
     return newErrors;
   };
 
+  const router = useRouter();// change
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
@@ -77,6 +79,7 @@ export default function AddProductPage() {
         } else {
           console.log("Product post successful frontend:", data.product);
           toast("Product has been created successfully");
+        setTimeout(() => router.push("/productsPage"), 1000);
         }
       } catch (error) {
         console.error("Error uploading product:", error);

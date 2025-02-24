@@ -15,7 +15,7 @@ function ProductsPage() {
       <h1>Product List</h1>
       {allProducts.length > 0 ? (
         allProducts.map((product, index) => (
-          <p key={index}>{"Snack"}</p>
+          <p key={index}>{product.productName}</p>
         ))
       ) : (
         <p>No products found.</p>
