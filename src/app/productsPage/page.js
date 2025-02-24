@@ -4,6 +4,24 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
+async function getAllProducts() {
+  try {
+    const response = await fetch("http://localhost:5000/api/product/upload", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+    console.log(`this is the data we are testing`, data);
+  } catch (error) {
+    console.log(
+      "This is an error in the fetch for all products frontend",
+      error
+    );
+    throw error;
+  }
+}
+
 
 function HoodieCard({ name, price, image1, image2 }) {
   const [isHovered, setIsHovered] = useState(false);
