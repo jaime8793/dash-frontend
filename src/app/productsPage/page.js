@@ -4,10 +4,10 @@ import React, { useEffect, useContext } from "react";
 import getAllProducts from "./fetchAllUsers";
 import { AppContext } from "@/context/AppContext";
 function ProductsPage() {
-  const { allProducts, setAllProducts } = useContext(AppContext); // ✅ Correct
+  const { allProducts, setAllProducts } = useContext(AppContext); // 
 
   useEffect(() => {
-    getAllProducts(setAllProducts); // ✅ Call fetch only after mount
+    getAllProducts(setAllProducts); // 
   }, []); // Empty dependency array → Runs only once after first render
 
   return (
