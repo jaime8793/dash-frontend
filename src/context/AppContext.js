@@ -17,7 +17,7 @@ export function AppContextProvider({ children }) {
         setState,
         userData,
         setUserData,
-        userData, setUserData
+        allProducts, setAllProducts
       }}
     >
       {children}
