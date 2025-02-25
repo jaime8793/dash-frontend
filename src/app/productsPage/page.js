@@ -4,7 +4,7 @@ import React, { useEffect, useContext } from "react";
 import getAllProducts from "./fetchAllUsers";
 import { AppContext } from "@/context/AppContext";
 function ProductsPage() {
-  const { allProducts, setAllProducts } = useContext(AppContext); // 
+  const { allProducts, setAllProducts } = useContext(AppContext); //
 
   useEffect(() => {
     getAllProducts(setAllProducts); // 

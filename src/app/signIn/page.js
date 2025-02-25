@@ -4,13 +4,12 @@ import React, { useState, createContext, useContext } from "react";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AppContext } from "@/context/AppContext";
-//user context creation
 
 const SignIn = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    username: "", // Backend expects username
+    username: "", 
     password: "",
     rememberMe: false,
   });
