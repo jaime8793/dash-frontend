@@ -4,7 +4,10 @@ async function getAllProducts(setAllProducts) {
       "http://localhost:5000/api/product/allProducts",
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
       }
     );
 

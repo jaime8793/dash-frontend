@@ -66,7 +66,10 @@ export default function AddProductPage() {
           "http://localhost:5000/api/product/upload",
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "token": localStorage.getItem("token")
+            },
             body: JSON.stringify(formData),
           }
         );

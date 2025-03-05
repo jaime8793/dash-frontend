@@ -83,9 +83,9 @@ const SignIn = () => {
 
         console.log("Login successful frontend:", data);
 
-        console.log("This is the token", data.token)
+       // console.log("This is the token", data.token)
 
-        localStorage.setItem(token, data.token);
+        localStorage.setItem("token", data.token);
 
         // ✅ Properly update the state
         setUserData(data);
