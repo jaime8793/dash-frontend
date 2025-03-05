@@ -82,12 +82,14 @@ const SignIn = () => {
         }
 
         console.log("Login successful frontend:", data);
-        console.log(`this is the user data before state update`, userData);
+
+        console.log("This is the token", data.token)
+
+        localStorage.setItem(token, data.token);
 
         // ✅ Properly update the state
         setUserData(data);
 
-        console.log(`this is the user data after state update`, userData);
         router.push("/"); // Redirect user after successful login
       } catch (error) {
         setApiError(error.message);
