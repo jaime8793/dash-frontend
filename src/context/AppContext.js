@@ -1,14 +1,27 @@
-"use client";
-import { createContext, useState } from "react";
+"use client"
 
-// Create the context
+import { createContext, useState, useEffect } from "react";
+
 export const AppContext = createContext();
 
-// Create the provider component
 export function AppContextProvider({ children }) {
   const [state, setState] = useState("some value");
-  const [userData, setUserData] = useState(undefined);
+  const [userData, setUserData] = useState(() => {
+    // Load userData from localStorage on initialization
+    const savedUser = localStorage.getItem("userData");
+    return savedUser ? JSON.parse(savedUser) : undefined;
+  });
+
   const [allProducts, setAllProducts] = useState({});
+
+  // Save userData to localStorage whenever it changes
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem("userData", JSON.stringify(userData));
+    } else {
+      localStorage.removeItem("userData");
+    }
+  }, [userData]);
 
   return (
     <AppContext.Provider
@@ -17,7 +30,8 @@ export function AppContextProvider({ children }) {
         setState,
         userData,
         setUserData,
-        allProducts, setAllProducts
+        allProducts,
+        setAllProducts,
       }}
     >
       {children}

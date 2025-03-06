@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useContext } from "react";
-import getAllProducts from "./fetchAllUsers";
+import getAllProducts from "./fetchAllProducts";
 import { AppContext } from "@/context/AppContext";
 function ProductsPage() {
   const { allProducts, setAllProducts } = useContext(AppContext); //

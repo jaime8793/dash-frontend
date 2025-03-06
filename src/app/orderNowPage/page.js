@@ -68,7 +68,7 @@ export default function AddProductPage() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "token": localStorage.getItem("token")
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
             body: JSON.stringify(formData),
           }

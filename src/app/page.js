@@ -6,6 +6,38 @@ import Image from "next/image";
 import { useContext } from "react";
 import { AppContext } from "@/context/AppContext";
 
+
+
+const logout = async () => {
+
+  try {
+    const response = await fetch("http://localhost:5000/api/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // body: JSON.stringify({
+      //   username: formData.username,
+      //   password: formData.password,
+      // }),
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Logout failed");
+    }
+
+    console.log("Logout successful frontend:", data);
+
+    // console.log("This is the token", data.token)
+
+    localStorage.removeItem("token");
+    set
+
+    router.push("/"); // Redirect user after successful login
+  } catch (error) {
+    setApiError(error.message);
+  }
+};
 const DashLandingPage = () => {
   const { userData } = useContext(AppContext);
   const landingPageButtons = [
@@ -15,6 +47,7 @@ const DashLandingPage = () => {
     { text: "Order Now", link: "http://localhost:3000/orderNowPage" },
     { text: "Learn More", link: "#" },
     { text: "Sign Up", link: "http://localhost:3000/signUp" },
+    { text: "Logout", link: "#" },
   ];
 
   return (
@@ -47,7 +80,8 @@ const DashLandingPage = () => {
             From food to groceries, Dash delivers what you need in minutes.
           </p>
           <div className="flex space-x-4">
-            <button className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700"
+            <button
+              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700"
               href="http://localhost:3000/orderNowPage"
             >
               Order Now
