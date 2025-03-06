@@ -9,11 +9,13 @@ import { AppContext } from "@/context/AppContext";
 
 
 const logout = async () => {
-
   try {
-    const response = await fetch("http://localhost:5000/api/logout", {
+    const response = await fetch("http://localhost:5000/api/logout/logout", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       // body: JSON.stringify({
       //   username: formData.username,
       //   password: formData.password,
@@ -22,7 +24,9 @@ const logout = async () => {
 
     const data = await response.json();
 
-    if (!data.success) {
+    console.log(data)
+
+    if (!data.message) {
       throw new Error(data.message || "Logout failed");
     }
 
@@ -30,12 +34,12 @@ const logout = async () => {
 
     // console.log("This is the token", data.token)
 
-    localStorage.removeItem("token");
-    set
+    localStorage.removeItem("userData");
+  
 
-    router.push("/"); // Redirect user after successful login
+    //router.push("http://localhost:3000/signIn"); // Redirect user after successful logOUT
   } catch (error) {
-    setApiError(error.message);
+    throw error
   }
 };
 const DashLandingPage = () => {
@@ -47,7 +51,6 @@ const DashLandingPage = () => {
     { text: "Order Now", link: "http://localhost:3000/orderNowPage" },
     { text: "Learn More", link: "#" },
     { text: "Sign Up", link: "http://localhost:3000/signUp" },
-    { text: "Logout", link: "#" },
   ];
 
   return (
@@ -65,6 +68,14 @@ const DashLandingPage = () => {
               {button.text}
             </a>
           ))}
+          <a
+            //href={button.link}
+            className="hover:text-purple-200"
+            onClick={logout}
+
+          >
+            Logout
+          </a>
         </div>
       </nav>
 
