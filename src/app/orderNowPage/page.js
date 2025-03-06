@@ -23,6 +23,7 @@ export default function AddProductPage() {
     price: "",
     category: "",
     inventory: "",
+    productFile: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -49,6 +50,8 @@ export default function AddProductPage() {
       newErrors.description = "Description is required";
     if (!formData.price || isNaN(formData.price))
       newErrors.price = "Valid price is required";
+    if (!formData.productFile || isNaN(formData.productFile))
+      newErrors.productFile = "Valid productFile  is required";
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.inventory || isNaN(formData.inventory))
       newErrors.inventory = "Valid inventory count is required";
@@ -110,6 +113,22 @@ export default function AddProductPage() {
                 value={formData.productName}
                 onChange={handleChange}
                 className={errors.productName ? "border-red-500" : ""}
+              />
+              {errors.productName && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.productName}
+                </p>
+              )}
+            </div>
+            <div>
+              <Label htmlFor="productFile">Upload Picture</Label>
+              <Input
+                id="productFile"
+                name="productFile"
+                type="file"
+                value={formData.productFile}
+                onChange={handleChange}
+                className={errors.productFile ? "border-red-500" : ""}
               />
               {errors.productName && (
                 <p className="text-red-500 text-sm mt-1">
