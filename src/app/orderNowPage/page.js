@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Correct import
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner"; //toaster element
+import { toast } from "sonner";
+import { UploadButton } from "@uploadthing/react";
 
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
@@ -23,9 +24,10 @@ export default function AddProductPage() {
     price: "",
     category: "",
     inventory: "",
-    productFile: "",
+    productFile: "", // This will store the uploaded image URL
   });
   const [errors, setErrors] = useState({});
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,15 +52,13 @@ export default function AddProductPage() {
       newErrors.description = "Description is required";
     if (!formData.price || isNaN(formData.price))
       newErrors.price = "Valid price is required";
-    if (!formData.productFile || isNaN(formData.productFile))
-      newErrors.productFile = "Valid productFile  is required";
+    if (!formData.productFile)
+      newErrors.productFile = "Product image is required";
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.inventory || isNaN(formData.inventory))
       newErrors.inventory = "Valid inventory count is required";
     return newErrors;
   };
-
-  const router = useRouter();// change
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,18 +78,16 @@ export default function AddProductPage() {
         );
 
         const data = await response.json();
-        console.log(`this is the data we are testing`, data);
-
         if (!data) {
           throw new Error(data.message || "Product upload failed");
         } else {
           console.log("Product post successful frontend:", data.product);
           toast("Product has been created successfully");
-        setTimeout(() => router.push("/productsPage"), 1000);
+          setTimeout(() => router.push("/productsPage"), 1000);
         }
       } catch (error) {
         console.error("Error uploading product:", error);
-        setErrors({ submit: error.message }); // ✅ Fix error state update
+        setErrors({ submit: error.message });
       }
     } else {
       console.log("Validation failed:", newErrors);
@@ -99,7 +97,7 @@ export default function AddProductPage() {
 
   return (
     <div className="container mx-auto p-9 h-screen flex">
-      <Card className="w-full max-w-2xl m-auto ">
+      <Card className="w-full max-w-2xl m-auto">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Add New Product</CardTitle>
         </CardHeader>
@@ -120,19 +118,29 @@ export default function AddProductPage() {
                 </p>
               )}
             </div>
+
             <div>
               <Label htmlFor="productFile">Upload Picture</Label>
-              <Input
-                id="productFile"
-                name="productFile"
-                type="file"
-                value={formData.productFile}
-                onChange={handleChange}
-                className={errors.productFile ? "border-red-500" : ""}
+              {/* Replace the traditional file input with UploadButton */}
+              <UploadButton
+                endpoint="imageUploader" // Must match the UploadThing endpoint defined on your server
+                url="/api/uploadthing" // Your API route for UploadThing
+                onClientUploadComplete={(res) => {
+                  if (res && res.length > 0) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      productFile: res[0].url, // Store the uploaded file URL
+                    }));
+                  }
+                }}
+                onUploadError={(error) => {
+                  console.error("Upload error:", error);
+                }}
               />
-              {errors.productName && (
+              
+              {errors.productFile && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.productName}
+                  {errors.productFile}
                 </p>
               )}
             </div>
@@ -173,7 +181,7 @@ export default function AddProductPage() {
               <Label htmlFor="category">Category</Label>
               <Select
                 onValueChange={handleCategoryChange}
-                value={formData.category || ""} // ✅ Prevents empty state issue
+                value={formData.category || ""}
               >
                 <SelectTrigger
                   className={errors.category ? "border-red-500" : ""}
