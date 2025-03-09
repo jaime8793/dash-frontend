@@ -137,7 +137,6 @@ export default function AddProductPage() {
                   console.error("Upload error:", error);
                 }}
               />
-              
               {errors.productFile && (
                 // I cast thy burden to the christ within and I go free
                 <p className="text-red-500 text-sm mt-1">
