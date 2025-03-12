@@ -79,7 +79,7 @@ export default function AddProductPage() {
         );
 
         const data = await response.json();
-        if (!response.ok) {
+        if (!data) {
           throw new Error(data.message || "Product upload failed");
         } else {
           console.log("Product post successful frontend:", data.product);
