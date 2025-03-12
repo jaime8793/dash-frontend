@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { UploadButton } from "@uploadthing/react";
 
+
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
     productName: "",
@@ -78,7 +79,7 @@ export default function AddProductPage() {
         );
 
         const data = await response.json();
-        if (!data) {
+        if (!response.ok) {
           throw new Error(data.message || "Product upload failed");
         } else {
           console.log("Product post successful frontend:", data.product);
@@ -121,24 +122,34 @@ export default function AddProductPage() {
 
             <div>
               <Label htmlFor="productFile">Upload Picture</Label>
-              {/* Replace the traditional file input with UploadButton */}
               <UploadButton
-                endpoint="imageUploader" // Must match the UploadThing endpoint defined on your server
-                url="/api/uploadthing" // Your API route for UploadThing
+                endpoint="imageUploader" // Must match the backend router key
+                url="http://localhost:5000/api/uploadthing/uploadthing"
                 onClientUploadComplete={(res) => {
                   if (res && res.length > 0) {
                     setFormData((prevData) => ({
                       ...prevData,
-                      productFile: res[0].url, // Store the uploaded file URL
+                      productFile: res[0].url, // Store uploaded file URL
                     }));
+                    toast("Image uploaded successfully");
                   }
                 }}
                 onUploadError={(error) => {
                   console.error("Upload error:", error);
+                  toast.error("Failed to upload image", error);
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    productFile: "Failed to upload image",
+                  }));
                 }}
               />
+
+              {formData.productFile && (
+                <p className="text-green-500 text-sm mt-1">
+                  Image uploaded successfully
+                </p>
+              )}
               {errors.productFile && (
-                // I cast thy burden to the christ within and I go free
                 <p className="text-red-500 text-sm mt-1">
                   {errors.productFile}
                 </p>
